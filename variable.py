@@ -5,3 +5,7 @@ gdp_jpy = 183.2
 print(usd_jpy)
 print(eur_jpy)
 print(gdp_jpy)
+
+total = usd_jpy + eur_jpy
+
+print(total)
