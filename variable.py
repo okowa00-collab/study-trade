@@ -1,11 +1,8 @@
-usd_jpy = 145.8
-eur_jpy = 157.3
-gdp_jpy = 183.2
+day1 = 145.8
+day2 = 146.2
+day3 = 144.9
+day4 = 145.5
 
-print(usd_jpy)
-print(eur_jpy)
-print(gdp_jpy)
+high = max(day1, day2, day3, day4)
 
-total = usd_jpy + eur_jpy
-
-print(total)
+print(high)
