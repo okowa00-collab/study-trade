@@ -1,12 +1,13 @@
-import pandas as pd
+#configを見て加工
 
-file_path = "data/raw/usdjpy_2026-05-01_2026-05-05.csv"
-loaded_df = pd.read_csv(file_path)
+import pandas as pd
+from config import RAW_CSV_PATH, PROCESSED_CSV_PATH
+
+loaded_df = pd.read_csv(RAW_CSV_PATH)
 
 loaded_df["diff"] = loaded_df["rate"].diff().round(2)
 
-output_path = "data/processed/usdjpy_with_diff.csv"
-loaded_df.to_csv(output_path, index=False)
+loaded_df.to_csv(PROCESSED_CSV_PATH, index=False)
 
 print("加工済みCSV保存OK")
-print(output_path)
+print(PROCESSED_CSV_PATH)

@@ -1,18 +1,14 @@
+#configを見てDB保存
+
 import pandas as pd
 import sqlite3
+from config import PROCESSED_CSV_PATH, DB_PATH,TABLE_NAME
 
-db_path = "data/db/fx_data.db" 
+conn = sqlite3.connect(DB_PATH)
 
-conn = sqlite3.connect(db_path)
-print("DB接続OK")
+df = pd.read_csv(PROCESSED_CSV_PATH)
 
-file_path = "data/processed/usdjpy_with_diff.csv"
-df = pd.read_csv(file_path)
-
-print("csv読み込みOK")
-print(df.head())
-
-df.to_sql("fx_rates", conn, if_exists="replace", index=False)
+df.to_sql(TABLE_NAME, conn, if_exists="replace", index=False)
 print("SQLite保存OK")
 
 conn.close()
