@@ -6,21 +6,18 @@ conn = sqlite3.connect(db_path)
 cur = conn.cursor()
 
 cur.execute("""
-SELECT
-            AVG(rate),
-            MAX(rate),
-            MIN(rate),
-            COUNT(*)
+SELECT 
+            SUM(CASE WHEN diff > 0 THEN 1 ELSE 0 END),
+            SUM(CASE WHEN diff < 0 THEN 1 ELSE 0 END),
+            SUM(CASE WHEN diff = 0 THEN 1 ELSE 0 END)
 FROM fx_rates;
 """)
-summary = cur.fetchone()
 
-avg_rate, max_rate, min_rate, count =summary
+up_count, down_count, same_count = cur.fetchone()
 
 
-print(f"平均レートは{round(avg_rate, 2)}")
-print(f"最大レートは {max_rate}")
-print(f"最小レートは {min_rate}")
-print(f"件数は {count}件")
+print(f"上がった日は {up_count}日")
+print(f"下がった日は {down_count}日")
+print(f"変わらなかった日は {same_count}日")
 
 conn.close()
