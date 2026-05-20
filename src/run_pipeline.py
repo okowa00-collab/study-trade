@@ -1,47 +1,43 @@
 #処理をまとめて動かす
-
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
-fetch_script = ROOT_DIR / "src" / "fetch_rates.py"
-read_script = ROOT_DIR / "src" / "read_csv.py"
-save_script = ROOT_DIR / "src" / "save_to_sqlite.py"
-query_script = ROOT_DIR / "src" / "query_sqlite.py"
+def run_script(script_name, start_message, done_message):
+    script_path = ROOT_DIR / "src" / script_name
 
-print("=== 1. 為替データを取得します。===")
-subprocess.run(
-    [sys.executable, str(fetch_script)],
-    check = True,
-    cwd=ROOT_DIR,
+    print(start_message)
+
+    subprocess.run(
+        [sys.executable, str(script_path)],
+        check=True,
+        cwd=ROOT_DIR,
+    )
+    
+    print(done_message)
+
+run_script(
+    "fetch_rates.py",
+    "=== 1. 為替データを取得します ===",
+    "=== fetch_rates.py 完了 ===",
 )
-print("=== fetch_rates.py 完了 ===")
 
-
-print("=== 2. CSVを読み込んで加工します ===")
-subprocess.run(
-    [sys.executable, str(read_script)],
-    check = True,
-    cwd=ROOT_DIR,
+run_script(
+    "read_csv.py",
+    "=== 2. CSVを読み込んで加工します ===",
+    "=== read_csv.py 完了 ===",
 )
-print("=== read_csv.py 完了 ===")
 
-
-print("=== 3. SQLiteに保存します ===")
-subprocess.run(
-    [sys.executable, str(save_script)],
-    check = True,
-    cwd=ROOT_DIR,
+run_script(
+    "save_to_sqlite.py",
+    "=== 3. SQLiteに保存します ===",
+    "=== save_to_sqlite.py 完了 ===",
 )
-print("=== save_to_sqlite.py 完了 ===")
 
-
-print("=== 4. SQLiteから分析結果を表示します ===")
-subprocess.run(
-    [sys.executable, str(query_script)],
-    check = True,
-    cwd=ROOT_DIR,
+run_script(
+    "query_sqlite.py",
+    "=== 4. SQLiteから分析結果を表示します ===",
+    "=== query_sqlite.py 完了 ===",
 )
-print("=== query_sqlite.py 完了 ===")
