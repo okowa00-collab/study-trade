@@ -43,4 +43,30 @@ print(f"{start_date} から {end_date} までのデータを分析しました�
 print(f"前日比を比較できる{diff_count}回のうち、上昇が{up_count}回、下落が{down_count}回、横ばいが{same_count}回でした。")
 print(f"上昇割合は {round(up_rate, 1)}% です")
 
+cur.execute(f"""
+            SELECT date, rate, diff
+            FROM {TABLE_NAME}
+            WHERE diff IS NOT NULL
+            ORDER BY diff DESC
+            LIMIT 1;
+""")
+
+max_up_day = cur.fetchone()
+
+print("一番上がった日")
+print(f"{max_up_day['date']} は前日比 {max_up_day['diff']} で、レートは {max_up_day['rate']} でした。")
+
+cur.execute(f"""
+            SELECT date, rate, diff
+            FROM {TABLE_NAME}
+            WHERE diff IS NOT NULL
+            ORDER BY diff ASC
+            LIMIT 1;
+""")
+
+max_down_day = cur.fetchone()
+
+print("一番下がった日")
+print(f"{max_down_day['date']} は前日比 {max_down_day['diff']} で、レートは {max_down_day['rate']} でした。")
+
 conn.close()
