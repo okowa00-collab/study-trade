@@ -83,10 +83,10 @@ def main():
                 WHERE diff IS NOT NULL;
                 """)
 
-    avg_row =cur.fetchone()
+    avg_row = cur.fetchone()
 
     print("平均前日比")
-    print(f"この期間の平均前日比は {round(avg_row['avg_diff'],2)}でした。")
+    print(f"この期間の平均前日比は {round(avg_row['avg_diff'], 2)}でした。")
 
     cur.execute(f"""
                 SELECT

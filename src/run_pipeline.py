@@ -4,7 +4,6 @@ import sys
 from pathlib import Path
 
 def main():
-
     ROOT_DIR = Path(__file__).resolve().parent.parent
 
     def run_script(script_name, start_message, done_message):
