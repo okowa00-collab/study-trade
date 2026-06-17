@@ -1,5 +1,8 @@
 # configを見てAPI取得
 
+from pathlib import Path
+
+
 import pandas as pd
 import requests
 
@@ -30,6 +33,8 @@ def main():
 
     print(f"{first_date} から {last_date} までの {days_count}日分")
 
+    Path(RAW_CSV_PATH).parent.mkdir(parents=True, exist_ok=True)
+    
     df.to_csv(RAW_CSV_PATH, index=False)
     print("CSV保存OK")
     print(RAW_CSV_PATH)
