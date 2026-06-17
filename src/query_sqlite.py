@@ -6,7 +6,7 @@ import sqlite3
 from config import DB_PATH, TABLE_NAME
 
 
-def main:
+def main():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
 
@@ -184,4 +184,4 @@ def main:
 
 
 if __name__ == "__main__":
-    main
+    main()
