@@ -1,4 +1,4 @@
-#configを見てAPI取得
+# configを見てAPI取得
 
 import pandas as pd
 import requests
