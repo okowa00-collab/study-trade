@@ -10,7 +10,7 @@ from config import START_DATE, END_DATE, BASE, QUOTE, RAW_CSV_PATH
 def main():
     url = (
         f"https://api.frankfurter.dev/v2/rates"
-        f?from={START_DATE}&to={END_DATE}&base={BASE}&quotes={QUOTE}
+        f"?from={START_DATE}&to={END_DATE}&base={BASE}&quotes={QUOTE}"
     )
 
     response = requests.get(url)
