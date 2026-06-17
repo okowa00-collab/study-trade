@@ -56,6 +56,7 @@ max_up_day = cur.fetchone()
 print("一番上がった日")
 print(f"{max_up_day['date']} は前日比 {max_up_day['diff']} で、レートは {max_up_day['rate']} でした。")
 
+
 cur.execute(f"""
             SELECT date, rate, diff
             FROM {TABLE_NAME}
@@ -68,5 +69,109 @@ max_down_day = cur.fetchone()
 
 print("一番下がった日")
 print(f"{max_down_day['date']} は前日比 {max_down_day['diff']} で、レートは {max_down_day['rate']} でした。")
+
+
+cur.execute(f"""
+            SELECT AVG(diff)AS avg_diff
+            FROM {TABLE_NAME}
+            WHERE diff IS NOT NULL;
+            """)
+
+avg_row =cur.fetchone()
+
+print("平均前日比")
+print(f"この期間の平均前日比は {round(avg_row['avg_diff'],2)}でした。")
+
+cur.execute(f"""
+            SELECT
+                weekday,
+                COUNT(diff) AS diff_count,
+                SUM(CASE WHEN diff > 0 THEN 1 ELSE 0 END) AS up_count,
+                ROUND(
+                    SUM(CASE WHEN diff > 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(diff),
+                1            
+                ) AS up_rate,
+            ROUND(AVG(diff), 2) AS avg_diff
+            FROM {TABLE_NAME}
+            WHERE diff IS NOT NULL
+            AND weekday NOT IN ('Saturday', 'Sunday')
+            GROUP BY weekday
+            ORDER BY up_rate DESC;
+            """)
+
+weekday_rows = cur.fetchall()
+
+print("曜日ごとの上昇率")
+
+for row in weekday_rows:
+    print(
+        f"{row['weekday']}: "
+        f"{row['diff_count']}回中 {row['up_count']}回上昇 "
+        f"上昇率 {row['up_rate']}% "
+        f"平均前日比 {row['avg_diff']}"
+    )
+
+cur.execute(f"""
+            SELECT
+                COUNT(*) AS prev_up_count,
+                SUM(CASE WHEN diff > 0 THEN 1 ELSE 0 END) AS next_up_count,
+                ROUND(
+                    SUM(CASE WHEN diff > 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*),
+                1
+                ) AS next_up_rate
+            FROM {TABLE_NAME}
+            WHERE prev_diff > 0;
+            """)
+
+prev_up_row = cur.fetchone()
+
+print("前日上昇後の動き")
+print(
+    f"前日が上がっていた日は {prev_up_row['prev_up_count']}回あり、"
+    f"その翌日も上がったのは {prev_up_row['next_up_count']}回、"
+    f"上昇率は {prev_up_row['next_up_rate']}% でした。"
+)
+
+cur.execute(f"""
+            SELECT
+                COUNT(*) AS prev_down_count,
+                SUM(CASE WHEN diff > 0 THEN 1 ELSE 0 END) AS next_up_count,
+                ROUND(
+                    SUM(CASE WHEN diff > 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*),
+                1
+                ) AS next_up_rate
+            FROM {TABLE_NAME}
+            WHERE prev_diff < 0;
+            """)
+
+prev_down_row = cur.fetchone()
+
+print("前日下落後の動き")
+print(
+    f"前日が下がっていた日は {prev_down_row['prev_down_count']}回あり、"
+    f"その翌日も上がったのは {prev_down_row['next_up_count']}回、"
+    f"上昇率は {prev_down_row['next_up_rate']}% でした。"
+)
+
+cur.execute(f"""
+            SELECT
+                COUNT(*) AS prev_same_count,
+                SUM(CASE WHEN diff > 0 THEN 1 ELSE 0 END) AS next_up_count,
+                ROUND(
+                    SUM(CASE WHEN diff > 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*),
+                1
+                ) AS next_up_rate
+            FROM {TABLE_NAME}
+            WHERE prev_diff = 0;
+            """)
+
+prev_same_row = cur.fetchone()
+
+print("前日横ばい後の動き")
+print(
+    f"前日が横ばいだった日は {prev_same_row['prev_same_count']}回あり、"
+    f"その翌日も上がったのは {prev_same_row['next_up_count']}回、"
+    f"上昇率は {prev_same_row['next_up_rate']}% でした。"
+)
 
 conn.close()
